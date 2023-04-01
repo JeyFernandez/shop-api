@@ -35,14 +35,14 @@ export class ProductsService {
     }
 
     //actualizar product especifico
-    async update (id:string,cambios: CreateProductDto){
-        const findProduct = await this.findOne(id)
+    async update(id: string, cambioDto: CreateProductDto) {
+        const findCategories = await this.findOne(id);
         const updateProduct = await this.productRepository.merge(
-            findProduct,
-            cambios,
-            );
-
-            return this.productRepository.update(id, updateProduct);
+            findCategories,
+            cambioDto
+        );
+    
+        return this.productRepository.save(updateProduct);
     }
 
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Param, ParseUUIDPipe, Delete } from '@nestjs/common';
+import { Body, Controller, Post, Get, Param, ParseUUIDPipe, Delete, Patch } from '@nestjs/common';
 import { ProductsService } from './product.service';
 import { CreateProductDto } from './dto/product.dto';
 
@@ -28,8 +28,13 @@ export class ProductsController {
     remove(@Param('id', ParseUUIDPipe) id:string) {
         return this.ProductsServiceRepo.remove(id);
     }
-    
-    //patch
-    //param y Body
 
+
+    @Patch(":id")
+    updateProduct(
+        @Param("id", ParseUUIDPipe) id: string,
+        @Body() cambioDto: CreateProductDto
+    ) {
+        return this.ProductsServiceRepo.update(id, cambioDto);
+    }
 }
