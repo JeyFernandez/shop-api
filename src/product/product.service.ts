@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/product.dto';
 import { ProductImage } from './entities/product-image.entity';
@@ -12,7 +12,8 @@ export class ProductsService {
         private readonly productRepository: Repository<Product>,
 
         @InjectRepository(ProductImage)
-        private readonly productImageRepository: Repository<ProductImage>
+        private readonly imageRepository: Repository<ProductImage>,
+        private readonly dataSource: DataSource,
     ) {}
     //Metodo para crear product
 
@@ -21,7 +22,7 @@ export class ProductsService {
         const product = await this.productRepository.create({
             ...detalleProducto,
             images: images.map((image)=> 
-            this.productImageRepository.create({url: image}))
+            this.imageRepository.create({url: image}))
         })
         await this.productRepository.save(product);
         return product;
@@ -33,7 +34,7 @@ export class ProductsService {
     } */
 
     findAll(){
-        return this.productRepository.find();
+        return this.productRepository.find({relations:['images']});
     }
 
     //metodo para ver un porfucto
@@ -50,13 +51,33 @@ export class ProductsService {
 
     //actualizar product especifico
     async update(id: string, cambio: CreateProductDto){
-        const producto = await this.productRepository.preload({
+        const {images, ...updateAll} = cambio;
+
+        const product = await this.productRepository.preload({
             id: id,
-            ...cambio,
-            images:[],
+            ...updateAll,
         });
-        await this.productRepository.save(producto);
-        return producto;
+        //Consultar a la base de datos para modificarla.
+        const queryRunner = await this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        
+        //si vienen nuevas imagenes que se eliminen las anteriores
+        if(images){
+            await queryRunner.manager.delete(ProductImage, {product: {id}});
+            
+            product.images = await images.map((image)=>
+            this.imageRepository.create({url: image})
+            );
+        }
+        else{ 
+            product.images = await this.imageRepository.findBy({product:{id}});
+        }
+
+        await queryRunner.manager.save(product);
+        await queryRunner.commitTransaction();
+        await queryRunner.release();
+        return product;
     }
 /*     async update(id: string, cambioDto: CreateProductDto) {
         const findCategories = await this.findOne(id);
