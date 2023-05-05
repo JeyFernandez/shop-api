@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { SizesService } from './sizes.service';
 import { CreateShirtDto } from './dto/create-size.dto';
 
-@Controller('sizes')
+@Controller('shirt')
 export class SizesController {
   constructor(private readonly sizesService: SizesService) {}
 

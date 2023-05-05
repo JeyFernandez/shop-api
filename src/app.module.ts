@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ModuleProduct } from './product/produc.module';
 import { SizesModule } from './sizes/sizes.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { SizesModule } from './sizes/sizes.module';
     }),
     ModuleProduct,
     SizesModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

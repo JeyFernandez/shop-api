@@ -56,16 +56,19 @@ export class SizesService {
         this.sizeRepository.create({zise: zise})
         );
     }
-    // else{ 
-    //     product.images = await this.imageRepository.findBy({product:{id}});
-    // }
+    else{ 
+        shirt.zise = await this.sizeRepository.findBy({shirts:{id}});
+    }
 
-    // await queryRunner.manager.save(product);
-    // await queryRunner.commitTransaction();
-    // await queryRunner.release();
-    // return product;
+    await queryRunner.manager.save(Shirts);
+    await queryRunner.commitTransaction();
+    await queryRunner.release();
+    return shirt;
 }
-  remove(id:string) {
-    return `This action removes a #${id} size`;
+  async remove(id:string) {
+    const shirt = await this.findOne(id);
+    await this.shirtsRepository.remove(shirt);
+
+    return 'Shirt removed successfully';
   }
 }
