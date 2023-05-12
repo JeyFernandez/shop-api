@@ -1,9 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/product.dto';
 import { ProductImage } from './entities/product-image.entity';
+import { join } from "path";
+import { existsSync } from "fs";
 
 @Injectable()
 export class ProductsService {

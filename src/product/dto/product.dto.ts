@@ -8,6 +8,11 @@ export class CreateProductDto{
     @IsNumber()
     price:number;
 
+    @IsString()
+    @IsOptional()
+    filename:string;
+
+    //Relacion
     @IsString({each: true})
     @IsArray()
     @IsOptional()

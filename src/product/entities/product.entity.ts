@@ -12,6 +12,9 @@ export class Product {
     @Column ({type: 'numeric',})
     price: number;
 
+    @Column({type: 'varchar', nullable: true})
+    filename:string;
+
     //relacion
     @OneToMany(
         ()=> ProductImage,

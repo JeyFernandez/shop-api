@@ -1,6 +1,10 @@
-import { Body, Controller, Post, Get, Param, ParseUUIDPipe, Delete, Patch } from '@nestjs/common';
+import { Body, Controller, Post, Get, Param, ParseUUIDPipe, Delete, Patch, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { ProductsService } from './product.service';
 import { CreateProductDto } from './dto/product.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { fileFilter } from 'src/files/helpers/fileFIlter.helper';
+import { diskStorage } from 'multer';
+import { fileNamer } from 'src/files/helpers/fileNamer.helper';
 
 @Controller('products')
 export class ProductsController {
@@ -11,6 +15,7 @@ export class ProductsController {
     create(@Body() produtDto: CreateProductDto){
         return this.ProductsServiceRepo.create(produtDto);
     }
+
 
     //Metodo para mostrar todo los productos 
     @Get()
