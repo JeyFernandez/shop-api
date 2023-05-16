@@ -91,5 +91,11 @@ export class ProductsService {
         return this.productRepository.save(updateProduct);
     }
  */
-
+    staticProductsImages(imageName: string){
+        const path = join(__dirname, '../../static/products', imageName);
+        if(!existsSync(path)){
+            throw new BadRequestException(`No se encuentra el producto con la imagen ${imageName}`);
+        }
+        return path;
+    }
 }
